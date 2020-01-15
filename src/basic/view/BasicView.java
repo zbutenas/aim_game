@@ -1,43 +1,47 @@
 package basic.view;
 
-import java.awt.*;
+import java.awt.event.MouseAdapter;
 
 import javax.swing.*;
 
-import basic.model.BasicAimGame;
-import basic.model.BasicTarget;
 import basic.model.IAimGame;
 
 /**
  * Class represents a basic view.
  */
 public class BasicView extends JFrame implements IView {
-  private final IAimGame model;
+  BasicGameBoard b;
 
   /**
-   * Constructs a new view based on the given model.
-   * @param m the model.
+   * Constructs a new instance of a basic view.
+   * Utilizes the Java Swing library.
    */
-  BasicView(IAimGame m) {
-    this.model = m;
+  public BasicView() {
     this.setTitle("Aim Game");
     this.setSize(800, 800);
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
   }
 
   @Override
-  public void render() {
-    BasicGameBoard b = new BasicGameBoard(this.model);
-    b.addMouseListener(new UserMouseListener(this));
+  public void render(IAimGame model) {
+    this.b = new BasicGameBoard(model);
     this.add(b);
     this.setVisible(true);
   }
 
-  public static void main(String [] args) {
-    IAimGame m = new BasicAimGame(100);
-    m.addTarget(new BasicTarget(Color.red, 50, 800, 800));
-    m.addTarget(new BasicTarget(Color.black, 100, 800, 800));
-    IView v = new BasicView(m);
-    v.render();
+  @Override
+  public void addUserMouseListener(MouseAdapter listener) {
+    this.b.addMouseListener(listener);
+  }
+
+  @Override
+  public void repaint(IAimGame model) {
+    this.createRootPane();
+    this.render(model);
+  }
+
+  @Override
+  public void terminate() {
+    this.setVisible(false);
   }
 }
